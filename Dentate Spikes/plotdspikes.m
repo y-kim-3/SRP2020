@@ -4,14 +4,13 @@ s = d;
 e = 1;
 
 %identify ca1 pyr channel
-location = '(isequal($area,''dg'')&& (contains($layer,''**gc**'')||contains($layer,''**hil**'')))';  %search terms to search for 'pyr 1' (best pyr chan) in 'ca1' (to be searched inside 'chinfo')
+location = '(isequal($area,''dg'')&& (contains($layer,''gc'')||contains($layer,''hil'')))';  %search terms to search for 'pyr 1' (best pyr chan) in 'ca1' (to be searched inside 'chinfo')
 load(sprintf('%s/%schinfo.mat',animaldir,prefix)) %loads chinfo
 temp = evaluatefilter(chinfo,location); %Opens chinfo returns matches from 'location' in format [session, epoch, channel] (some repeated values because of chinfo)
 if(isempty(temp))
     error('Chinfo must contain at least one gc channel');
 end
 ctarget = unique(temp(:,3)); %(':,3) looks specifically in col3 for the unique entries
-%ctarget = 10
 
 window = 500; %time before and after in ms (1ms=1sample); 1sec total  %500
 x_shift = 700; %spacing btwn traces for plot x-direction   %700

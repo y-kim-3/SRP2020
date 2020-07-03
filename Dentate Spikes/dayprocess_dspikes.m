@@ -15,7 +15,9 @@ for a = animals
     
     for d = days
         ag_extractdspikes(animaldir, prefix, d, .015, 3)
+%         ej_extractdspikes(animaldir, prefix, d, .015, 3)
         plotdspikes
+        %plotfiltereddata_dspikes
         pause
         close all
     end
