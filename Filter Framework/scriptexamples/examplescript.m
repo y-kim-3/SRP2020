@@ -1,6 +1,8 @@
 
 animals = {'Putin'};
 
+%QUESTIONS: meaning of $ in front of the first argument in isequal? why is
+%it all in single quotes?
 epochfilter = [];
 epochfilter{1} = {'task','isequal($task,''markov'')'};
 epochfilter{2} = {'task','isequal($task,''markov'')'};

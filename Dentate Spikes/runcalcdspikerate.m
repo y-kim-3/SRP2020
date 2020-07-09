@@ -6,26 +6,35 @@ E3 = {'r1_01_', 'r1_12_', 'r1_18_', 'r1_21_', 'r1_29_', 'r1_33_', 'r1_34_',  'r1
 E4 = {'r1_05_', 'r1_24_', 'r1_31_', 'r1_35_', ...
     'r2_08_', 'r2_13_', 'r2_14_', 'r2_26_', 'r2_27_', 'r2_36_', 'r2_38_',...
     'r3_04_', 'r3_09_', 'r3_20_', 'r3_32_', 'r3_40_'};
-animals = [E3 E4];
+%animals = [E3 E4];
+animals = {'r1_01_'};
+%run it on one animal!
 
 epochfilter = [];
 epochfilter{1} = {'task','(~isequal($descript, ''FAIL'') && ~isequal($env,''FAIL''))'};
 
 datafilter = [];  %only works with single channel specified
+%mua = multiunit activity; from dataset Emily picked up spiking, looking at
+%what had a lot of spiking, showed where there are a lot of cell
+%bodies//pyr cell and gc layer had lots of cells
+%channel that had most cells, was most confident that it was in the gc/pyr layer
 datafilter{1} = {'chinfo','isequal($area,''dg'') && contains($layer,''mua'')'};
 %%%%MODIFY LATER TO ACCOMODATE MULTIPLE DG CHANNELS
 
 timefilter = [];
+%jitter cutoff
 % timefilter{1} = {'pos', '($vel < 1)'};
+%determining when animal has been travelling at <1cm/s continuously for
+%more than 30s
 timefilter{1} = {'<function> get2dstate <argname> immobilecutoff <argval> 1','($immobilitytime > 30)'};
 
 f = createfilter('animal', animals, 'epochs', epochfilter, 'data', datafilter, 'excludetime', timefilter);
 
-binrange = [5 50];
+binrange = [5 50];%set a breakpoint at line 31
 
 %Specify function and run
-f = setfilterfunction(f, 'calcdspikerate', {'dspikes'},'appendindex',2);
-f = runfilter(f);
+f = setfilterfunction(f, 'calcdspikerate', {'dspikes'},'appendindex',2);%set another breakpoint (35) here
+f = runfilter(f);%another breakpoint here (line 36) // set a breakpoint and step in through every line of calcdspikerate
 
 figopt=1;
 

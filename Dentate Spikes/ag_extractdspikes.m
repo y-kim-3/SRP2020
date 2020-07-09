@@ -1,4 +1,7 @@
 function ag_extractdspikes(directoryname, fileprefix, day, min_suprathresh_duration, nstd, varargin)
+%min suprathresh... how long does envelope need to be above threshold to detect as event
+%nstd = number of standard deviations
+
 %based on extractripples
 %extract dentate spikes
 %with no filtering, extracts events that are large - mindur 10ms, 5SD above
@@ -18,7 +21,7 @@ function ag_extractdspikes(directoryname, fileprefix, day, min_suprathresh_durat
 %	peak	  - peak height of waveform)
 %	maxthresh - the largest threshold in stdev units at which this dspike
 %			would still be detected.
-%	energy	  - total sum squared energy of waveform
+%	energy	  - total sum squared energy of waveform (area under curve)
 %	startind  - index of start time in eeg structure
 %	endind    - index of end time in eeg structure
 %	midind    - index of middle time in eeg structure
@@ -28,6 +31,9 @@ function ag_extractdspikes(directoryname, fileprefix, day, min_suprathresh_durat
 stdev = 0;
 baseline = 0;
 maxpeakval = 1000;
+
+%goes through the varargin array, finding the labels before each value
+%the user might want to specify/change the default values
 for option = 1:2:length(varargin)-1
     if isstr(varargin{option})
         switch(varargin{option})
@@ -47,38 +53,44 @@ end
 
 % define the standard deviation for the Gaussian smoother which we
 % apply before thresholding (this reduces sensitivity to spurious
-% flucutations in the ripple envelope)
+% flucutations in the dentate spike envelope)
 smoothing_width = 0.004; % 4 ms
 
+%input
 d = day;
 
 % move to the directory
+%input
 cd(directoryname);
 
+%list of all files in folder
 tmpflist = dir(sprintf('*eeg%02d-*.mat', day));
 %get rip list from pyr1 chan
+%to find a site, copy this code and modify slightly
 load(sprintf('%s/%schinfo.mat',directoryname,fileprefix))
 location = '(isequal($area,''ca1'')&& contains($layer,''pyr 1'')  )';%
 pyr1chan = evaluatefilter(chinfo(day),location);
 pyr1chan = unique(pyr1chan(:,3));
-
+%all i need to know is what the comments say
 for i = 1:length(tmpflist) %iterate through all eps, all chans
-    % load the ripple file
+    % load the eeg file
     load(tmpflist(i).name);
     % get the epoch number
     dash = find(tmpflist(i).name == '-');
     e = str2num(tmpflist(i).name((dash(1)+1):(dash(2)-1)));
     t = str2num(tmpflist(i).name((dash(2)+1:dash(2)+2)));
-    % raw trace envelope
+    % gives you raw trace envelope
     renv = abs(hilbert(double(eeg{d}{e}{t}.data)));
     
     % smooth the envelope:
+    % do i need to get rid of smoothing (figure it out)
     samprate = eeg{d}{e}{t}.samprate;
     kernel = gaussian(smoothing_width*samprate, ceil(8*smoothing_width*samprate));
     renv = smoothvect(renv, kernel);
-    % calculate the threshold in uV units
+    % calculate the threshold in uV units (microV)
     baseline = mean(renv);
     stdev = std(renv);
+    %cut off #
     thresh = baseline + nstd * stdev;
     % find the events
     % calculate the duration in terms of samples
@@ -90,6 +102,8 @@ for i = 1:length(tmpflist) %iterate through all eps, all chans
         
         %eliminate any events within 100ms of ripples; they are
         %sharpwaves
+        %probably will be editing this portion, change the window  of
+        %restriction
         load(sprintf('%s/%sripples%02d.mat',directoryname, fileprefix,day'))
         ripinds = [ripples{d}{e}{pyr1chan}.startind - 100, ripples{d}{e}{pyr1chan}.endind + 100];
         valids = ~isExcluded(tmpevents(:,8),ripinds); %midind anywhere in window of rips
@@ -104,6 +118,7 @@ for i = 1:length(tmpflist) %iterate through all eps, all chans
         ds.starttime = eeg{d}{e}{t}.starttime + ds.startind / samprate;
         ds.endtime = eeg{d}{e}{t}.starttime + ds.endind / samprate;
         ds.midtime = eeg{d}{e}{t}.starttime + ds.midind / samprate;
+        %gets us information
         ds.peak = tmpevents(valids,3);
         ds.energy = tmpevents(valids,7);
         ds.maxthresh = (tmpevents(valids,9) - baseline) / stdev;

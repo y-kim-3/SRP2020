@@ -7,12 +7,21 @@ function out = calcdspikerate(index, excludetimes, dspikes, varargin)
 % rates for each chunk (1 column/chunk)   any remainder time is ignored
 % NO BOOTSTRAPPING
 
+%Yuri's notes
+%varargin allows for any number of inputs: "varargin is a 1-by-N cell array, 
+%where N is the number of inputs that the function receives after the
+%explicitly declared input"
+
 % set option defaults
 appendindex = 1;  %default
 Fs = 1000;
 bins = [5 50];
 
+%CHECK: checks every other varagin array entry, look at function in other
+%code to figure out why
 for option = 1:2:length(varargin)-1
+    %every time an input after the specified inputs is "appendindex" it
+    %makes variable appendindex to whatever input that comes after
     if ischar(varargin{option})
         switch(varargin{option})
             case 'appendindex'
@@ -21,10 +30,12 @@ for option = 1:2:length(varargin)-1
                 error(['Option ',varargin{option},' unknown.']);
         end
     else
+        %error checking
         error('Options must be strings, followed by the variable');
     end
 end
 
+%~ = NOT
 if(~isempty(dspikes{index.epochs(1)}{index.epochs(2)}))
     d = dspikes{index.epochs(1)}{index.epochs(2)}{index.chinfo(1)};
     %  collect all valid times into one
