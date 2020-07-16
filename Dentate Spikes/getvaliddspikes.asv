@@ -1,4 +1,4 @@
-function [mostvalid, excluded] = getvaliddspikes(dspikes,index,excludeperiods, win, minstd, interripwin)
+function [mostvalid, excluded] = getvaliddspikes(dspikes, index)
 
 
 %clean up code, make sure it runs without errors, uncomment stuff!!!
@@ -91,8 +91,7 @@ for b = 1:length(dspikestarts)%aka go through all the dspikes
                 %vr1 = find(r1.maxthresh*r1.std+r1.baseline > d.std*5+d.baseline);
                 %if the midtime for spike b isn't in this channel's spike
                 %midtimes, then that means this spike isn't present in the
-                %channel. if it's not in the channel, counter puts a 1 in
-                %that plot.
+                %channel. if it's not in the channel, counter pu
                 if find(isExcluded(r1.midtime,[dspikestarts(b) dspikeends(b)]))
                     %if find(isExcluded(r1.midtime,[ripstarts(b) ripends(b)]))
                     counter(b,c) = 1;
@@ -101,13 +100,9 @@ for b = 1:length(dspikestarts)%aka go through all the dspikes
     %if i end up messing with this: look at counter
     %detects events that are detected on more than 1 channel
 end
-
 figure
     bins = -200:10:200;
 hist(peakdiffs,bins)
-%look at how many dspikes were excluded after picking out spikes that don't
-%meet the qualifications (in too many channels, not too close to beginning
-%or end, etc.)
 excluded(2) = length(validdspikes)-length(mostvalid);
 
 end

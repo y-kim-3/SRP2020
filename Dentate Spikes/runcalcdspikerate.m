@@ -139,7 +139,7 @@ elseif figopt==2
     
     for a = 1:length(f)
         if ~isempty(f(a).output)
-            results = f(a).output.calcriprates2.results;
+            results = f(a).output.calcdspikerate.results;
             for g = 1:length(results)  %iterate thru conditions
                 baseline{a} = [];
                 sd{a} = [];
@@ -158,8 +158,8 @@ elseif figopt==2
     end
     
     temp = [];
-    for g = 1:length(gnames)
-        match = regexp(animgeno,gnames(g));
+    for g = 1:length(animnames)
+        match = regexp(animgeno,animnames(g));
         temp=[temp g*(~cellfun(@isempty,match))];
     end
     groupnum = sum(temp,2);
@@ -170,7 +170,7 @@ elseif figopt==2
     [gsd,gsdstds,gsdsems] = grpstats(meansds',groupnum,{'mean','std','sem'});
     
     figure
-    for g = 1:length(gnames)
+    for g = 1:length(animnames)
         hold on
         h = bar(g-.25,gbase(g));
         set(h,'FaceColor',colors(g,:))

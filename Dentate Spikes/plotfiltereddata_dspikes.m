@@ -77,7 +77,7 @@ xlim([starts(r)-500, starts(r)+500])
     set(gca, 'YTickLabel', '')
     xpos = mean(xlim);
     %text(repmat(xpos,7,1),[-6*y_shift:y_shift:0], labels','horizontalalignment','center','Rotation',0,'FontSize',16)
-    title(sprintf('%s s%d, e%d, c%d, r%d. window is %02d sec.', prefix, s, e, ctarget, r, window/Fs))
+    title(sprintf('%s s%d, e%d, c%d, ds%d. window is %02d sec.', prefix, s, e, ctarget, r, window/Fs))
     axis tight
     box off 
     

@@ -15,7 +15,7 @@ function out = calcdspikerate(index, excludetimes, dspikes, varargin)
 % set option defaults
 appendindex = 1;  %default
 Fs = 1000;
-bins = [5 50]; %default
+bins = [5 50];
 
 %CHECK: checks every other varagin array entry, look at function in other
 %code to figure out why
@@ -26,8 +26,6 @@ for option = 1:2:length(varargin)-1
         switch(varargin{option})
             case 'appendindex'
                 appendindex = varargin{option+1};
-            case 'bins'
-                bins = varargin(option+1);
             otherwise
                 error(['Option ',varargin{option},' unknown.']);
         end
@@ -54,17 +52,13 @@ if(~isempty(dspikes{index.epochs(1)}{index.epochs(2)}))
     
     %exclude events that occur on 12+ chans
     %[morevalid, excluded] = getvaliddspikes(dspikes,index);
-    %getvaliddspikes(dspikes,index,trigindex,excludetimes, [.4 .4], 3, 0);
-    getvaliddspikes(dspikes,index,excludetimes, [.4 .4], 3, 0);
-    %makes the group of valid dspikes by looking through the qualifying
-    %spikes with good maxthresh values within the timeframe
-    validspikesizes = d.maxthresh(morevalid);
-    %goes through all the bins and counts the number of spikes
-    counts = histc(validspikesizes,bins,1);
+    getvaliddspikes(dspikes,index,trigindex,excludetimes, [.4 .4], 3, 0);
+    %makes the group of valid dspikes
+    validripsizes = d.maxthresh(morevalid);
+    counts = histc(validripsizes,bins,1);
 
-    %in this case out = f from runcalcdspikerate
     out.rates = counts/validdur;
-    out.sizes = validspikesizes;
+    out.sizes = validripsizes;
     out.validdur = validdur;
     out.totaldur = totaldur;
     out.baseline = d.baseline;

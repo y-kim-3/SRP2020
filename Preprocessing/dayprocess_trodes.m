@@ -17,7 +17,7 @@ animals = [E3 E4];
 datadir = 'E:\\LFP Data\CRCNS\Cohort 1\Trodes Raw Data';
 animalbasedir = 'E:\\LFP Data\CRCNS\Cohort 1\Preprocessed Data';
 %1x5 matrix
-days = 1:5;
+days = 1;
 
 %ignore
 myCluster = parcluster('local');
