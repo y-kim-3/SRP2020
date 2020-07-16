@@ -50,12 +50,12 @@ if(~isempty(dspikes{index.epochs(1)}{index.epochs(2)}))
     totaldur = length(fulltimes)/Fs;
     
     %exclude events outside inclusion times
-    morevalid = find(~isExcluded(d.starttime,excludetimes) & ~isExcluded(d.endtime,excludetimes));
+    % morevalid = find(~isExcluded(d.starttime,excludetimes) & ~isExcluded(d.endtime,excludetimes));
     
     %exclude events that occur on 12+ chans
     %[morevalid, excluded] = getvaliddspikes(dspikes,index);
     %getvaliddspikes(dspikes,index,trigindex,excludetimes, [.4 .4], 3, 0);
-    getvaliddspikes(dspikes,index,excludetimes, [.4 .4], 3, 0);
+    [morevalid, excluded] = getvaliddspikes(dspikes,index,excludetimes, [.4 .4], 3);
     %makes the group of valid dspikes by looking through the qualifying
     %spikes with good maxthresh values within the timeframe
     validspikesizes = d.maxthresh(morevalid);
@@ -69,6 +69,9 @@ if(~isempty(dspikes{index.epochs(1)}{index.epochs(2)}))
     out.totaldur = totaldur;
     out.baseline = d.baseline;
     out.std = d.std;
+    %YK 7/15/20 just because
+    out.excluded = excluded;
+    out.valid = morevalid;
     
     if (appendindex)
         out.index = index;

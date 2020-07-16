@@ -1,4 +1,4 @@
-function [mostvalid, excluded] = getvaliddspikes(dspikes,index,excludeperiods, win, minstd, interripwin)
+function [morevalid, excluded] = getvaliddspikes(dspikes,index,excludeperiods, win, minstd)
 
 
 %clean up code, make sure it runs without errors, uncomment stuff!!!
@@ -23,68 +23,82 @@ gc = index.chinfo;
 directory = index.animal{2};
 prefix = index.animal{3};
 
-%%%d = dspikes{s}{e}{gc};
-d = dspikes;
+d = dspikes{s}{e}{gc};
+% d = dspikes;
 %validdspikes = find((d.maxthresh >= minstd) & ~isExcluded(d.starttime,excludeperiods) & ~isExcluded(d.endtime,excludeperiods));
 dslengths = d.endtime - d.starttime;
 %so dspikes should last <0.5 s
-validdspikes = find(dslengths<0.5); %0.05
+% validdspikes = find(dslengths<0.5); %0.05 YURI 7/15
+%exclude events outside inclusion times
+validdspikes = find(dslengths<0.5 & d.maxthresh >= minstd & ~isExcluded(d.starttime,excludeperiods) & ~isExcluded(d.endtime,excludeperiods));
 figure
 hist(dslengths)
 excluded(1) = length(validdspikes); %initial number of detected nonexcluded rips
 %%%%%validdspikes = find(d.maxthresh >= 5)
 
+%YK 7/15/20 taken from getvalidrips
+%exclude spikes too close to beginning or end
+    while d.starttime(validdspikes(1)) < d.timerange(1)+win(1)
+        validdspikes(1) = [];
+    end
+    
+    while d.endtime(validdspikes(end)) > d.timerange(2)-win(2)
+        validdspikes(end) = [];
+    end
+
 % EJ 4/6/17 changed to eliminate rips that start or end during
 % excludeperiods (instead of just overlapping with midpoint)
-dspikestarts = d.startind(validdspikes);
-dspikeends = d.endind(validdspikes);
+dspikestarts = d.starttime(validdspikes);
+dspikeends = d.endtime(validdspikes);
+% 
+% location = 'isequal($area,''dg'') && contains($layer,''*val mol 1*'')';
+% infofile = sprintf('%s/%schinfo.mat',directory,prefix);
+% load(infofile)
+% temp = evaluatefilter(chinfo,location);
+% mol = unique(temp(:,3));
+% 
+% file = sprintf('%s/%seeg%02d-%d-%02d.mat', directory, prefix, s, e, gc);
+% load(file);
+% gceeg = double(eeg{s}{e}{gc}.data);
+% file = sprintf('%s/%seeg%02d-%d-%02d.mat', directory, prefix, s, e, mol);
+% load(file);
+% moleeg = double(eeg{s}{e}{mol}.data);
 
-location = 'isequal($area,''dg'') && contains($layer,''*val mol 1*'')';
-infofile = sprintf('%s/%schinfo.mat',directory,prefix);
-load(infofile)
-temp = evaluatefilter(chinfo,location);
-mol = unique(temp(:,3));
-
-file = sprintf('%s/%seeg%02d-%d-%02d.mat', directory, prefix, s, e, gc);
-load(file);
-gceeg = double(eeg{s}{e}{gc}.data);
-file = sprintf('%s/%seeg%02d-%d-%02d.mat', directory, prefix, s, e, mol);
-load(file);
-moleeg = double(eeg{s}{e}{mol}.data);
-
-ds = [];
+%ds = [];
 
 mostvalid = [];
-for b = 1:length(dspikestarts)%aka go through all the dspikes
+counter = zeros(length(dspikestarts),length(dspikes{index.epochs(1)}{index.epochs(2)}));
+ for b = 1:length(dspikestarts)%aka go through all the dspikes
     % MAKE SURE CHRONUX NOT ON PATH or wrong findpeaks function
     %finds max values in gcpks, their index at gcpkinds
-    [gcpks, gcpkinds] = findpeaks(gceeg(dspikestarts(b):dspikeends(b)));
-    [~, dspeakind] = max(gcpks);
-    %[molpks, molpkinds] = findpeaks(-1*moleeg(dspikestarts(b):dspikeends(b)));
-    [molpks, molpkinds] = findpeaks(-1*moleeg(dspikestarts(b)+gcpkinds(dspeakind)-50:dspikestarts(b)+gcpkinds(dspeakind)+50));
-    [~, molpeakind] = min(molpks);
-    molpkinds = molpkinds+gcpkinds(dspeakind)-50;
-    %diffs = pdist2(gcpkinds(dspeakind), molpkinds);
-    %if(min(diffs)<10)
-    %    mostvalid = [mostvalid; validdspikes(b)];
-    %end
-    peakdiffs(b) = gcpkinds(dspeakind) - molpkinds(molpeakind);
-    
-    if(dslengths(b) > .1)
-%if(peakdiffs(b)<=10 && peakdiffs(b)>=0)
-        
-        figure
-        plot(real(gceeg(dspikestarts(b):dspikeends(b))))
-        hold on
-        scatter(gcpkinds, gcpks)
-        
-        figure
-        plot(real(moleeg(dspikestarts(b):dspikeends(b))))
-        hold on
-        scatter(molpkinds, -1*molpks)
-        
-    end
+%     [gcpks, gcpkinds] = findpeaks(gceeg(dspikestarts(b):dspikeends(b)));
+%     [~, dspeakind] = max(gcpks);
+%     %[molpks, molpkinds] = findpeaks(-1*moleeg(dspikestarts(b):dspikeends(b)));
+%     [molpks, molpkinds] = findpeaks(-1*moleeg(dspikestarts(b)+gcpkinds(dspeakind)-50:dspikestarts(b)+gcpkinds(dspeakind)+50));
+%     [~, molpeakind] = min(molpks);
+%     molpkinds = molpkinds+gcpkinds(dspeakind)-50;
+%     %diffs = pdist2(gcpkinds(dspeakind), molpkinds);
+%     %if(min(diffs)<10)
+%     %    mostvalid = [mostvalid; validdspikes(b)];
+%     %end
+%     peakdiffs(b) = gcpkinds(dspeakind) - molpkinds(molpeakind);
+%     
+%     if(dslengths(b) > .1)
+% %if(peakdiffs(b)<=10 && peakdiffs(b)>=0)
+%         
+%         figure
+%         plot(real(gceeg(dspikestarts(b):dspikeends(b))))
+%         hold on
+%         scatter(gcpkinds, gcpks)
+%         
+%         figure
+%         plot(real(moleeg(dspikestarts(b):dspikeends(b))))
+%         hold on
+%         scatter(molpkinds, -1*molpks)
+%         
+%     end
     %for each channel, look at all the dspikes in that channel
+    
             for c = 1:length(dspikes{index.epochs(1)}{index.epochs(2)})
                 r1 = dspikes{index.epochs(1)}{index.epochs(2)}{c};
                 % EJ 4/6/17 changed to require noise events to occur at 5SD for detection
@@ -100,15 +114,32 @@ for b = 1:length(dspikestarts)%aka go through all the dspikes
             end 
     %if i end up messing with this: look at counter
     %detects events that are detected on more than 1 channel
-end
-
-figure
-    bins = -200:10:200;
-hist(peakdiffs,bins)
+ end
+% 
+% figure
+%     bins = -200:10:200;
+% hist(peakdiffs,bins)
 %look at how many dspikes were excluded after picking out spikes that don't
 %meet the qualifications (in too many channels, not too close to beginning
 %or end, etc.)
-excluded(2) = length(validdspikes)-length(mostvalid);
+% excluded(2) = length(validdspikes)-length(mostvalid);
+counter = sum(counter,2);
+    morevalid = validdspikes(counter<13);
+    excluded(2) = length(validdspikes)-length(morevalid);
+    
+%     if interrip win provided, exclude events that happen within 1sec of another event
+%     if (nargin>5)
+%         intervals = d.starttime(morevalid(2:end))-d.starttime(morevalid(1:end-1));
+%         for i = 1:length(intervals)
+%             if intervals(i)<interripwin
+%                 morevalid(i) = 0;
+%                 morevalid(i+1) = 0;
+%             end
+%         end
+%     end
+%     mostvalid = morevalid(morevalid>0);
+%     overlaprips = length(morevalid)-length(mostvalid);
+%     excluded(3) = overlaprips;
 
 end
 
