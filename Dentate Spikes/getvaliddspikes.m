@@ -27,12 +27,12 @@ d = dspikes{s}{e}{gc};
 % d = dspikes;
 %validdspikes = find((d.maxthresh >= minstd) & ~isExcluded(d.starttime,excludeperiods) & ~isExcluded(d.endtime,excludeperiods));
 dslengths = d.endtime - d.starttime;
-%so dspikes should last <0.5 s
-% validdspikes = find(dslengths<0.5); %0.05 YURI 7/15
+% validdspikes = find(dslengths<0.5); %0.05 YURI 7/15/20
 %exclude events outside inclusion times
 validdspikes = find(dslengths<0.5 & d.maxthresh >= minstd & ~isExcluded(d.starttime,excludeperiods) & ~isExcluded(d.endtime,excludeperiods));
-figure
-hist(dslengths)
+%YK 7/16/20 commented out histogram/figure so they stopped forming when run
+%figure
+%hist(dslengths)
 excluded(1) = length(validdspikes); %initial number of detected nonexcluded rips
 %%%%%validdspikes = find(d.maxthresh >= 5)
 
@@ -50,7 +50,7 @@ excluded(1) = length(validdspikes); %initial number of detected nonexcluded rips
 % excludeperiods (instead of just overlapping with midpoint)
 dspikestarts = d.starttime(validdspikes);
 dspikeends = d.endtime(validdspikes);
-% 
+% YK 7/15/20 comment out inversion code - not working
 % location = 'isequal($area,''dg'') && contains($layer,''*val mol 1*'')';
 % infofile = sprintf('%s/%schinfo.mat',directory,prefix);
 % load(infofile)
@@ -103,7 +103,7 @@ counter = zeros(length(dspikestarts),length(dspikes{index.epochs(1)}{index.epoch
                 r1 = dspikes{index.epochs(1)}{index.epochs(2)}{c};
                 % EJ 4/6/17 changed to require noise events to occur at 5SD for detection
                 %vr1 = find(r1.maxthresh*r1.std+r1.baseline > d.std*5+d.baseline);
-                %if the midtime for spike b isn't in this channel's spike
+                %YK if the midtime for spike b isn't in this channel's spike
                 %midtimes, then that means this spike isn't present in the
                 %channel. if it's not in the channel, counter puts a 1 in
                 %that plot.
@@ -112,10 +112,8 @@ counter = zeros(length(dspikestarts),length(dspikes{index.epochs(1)}{index.epoch
                     counter(b,c) = 1;
                 end
             end 
-    %if i end up messing with this: look at counter
     %detects events that are detected on more than 1 channel
  end
-% 
 % figure
 %     bins = -200:10:200;
 % hist(peakdiffs,bins)

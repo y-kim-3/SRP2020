@@ -58,7 +58,6 @@ cd(directoryname);
 tmpflist = dir(sprintf('*eeg%02d-*.mat', day));
 %get rip list from pyr1 chan
 load(sprintf('%s/%schinfo.mat',directoryname,fileprefix))
-%YURI: change this so that its not looking for ripples :P
 location = '(isequal($area,''ca1'')&& contains($layer,''pyr 1'')  )';%
 pyr1chan = evaluatefilter(chinfo(day),location);
 pyr1chan = unique(pyr1chan(:,3));
