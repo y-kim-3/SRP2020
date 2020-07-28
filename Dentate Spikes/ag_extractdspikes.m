@@ -88,8 +88,8 @@ for i = 1:length(tmpflist) %iterate through all eps, all chans
     kernel = gaussian(smoothing_width*samprate, ceil(8*smoothing_width*samprate));
     renv = smoothvect(renv, kernel);
     % calculate the threshold in uV units (microV)
-    baseline = mean(renv);
-    stdev = std(renv);
+     baseline = mean(renv);
+     stdev = std(renv);
     %cut off #
     thresh = baseline + nstd * stdev;
     % find the events
@@ -99,12 +99,12 @@ for i = 1:length(tmpflist) %iterate through all eps, all chans
     % extract the events if this is a valid trace
     if (thresh > 0) & any(find(renv<baseline))
         tmpevents = extracteventsnew(renv, thresh, baseline, 0, mindur, 0)';
-        
         %eliminate any events within 100ms of ripples; they are
         %sharpwaves
         %probably will be editing this portion, change the window  of
         %restriction, do we need to eliminate events near ripples at all?
         load(sprintf('%s/%sripples%02d.mat',directoryname, fileprefix,day'))
+        %ripinds = [ripples{d}{e}{pyr1chan}.startind - 100, ripples{d}{e}{pyr1chan}.endind + 100];
         ripinds = [ripples{d}{e}{pyr1chan}.startind - 100, ripples{d}{e}{pyr1chan}.endind + 100];
         valids = ~isExcluded(tmpevents(:,8),ripinds); %midind anywhere in window of rips
         % Assign the fields

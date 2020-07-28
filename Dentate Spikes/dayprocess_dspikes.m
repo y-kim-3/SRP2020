@@ -10,7 +10,7 @@ animals = {'r1_01_'};
 
 %guide to access rat files - point this at E3 and E4 separately
 animalbasedir = 'D:/Cohort 1/E3KI/';
-days = 1:5;
+days = 3;
 %a=array iterates through all the elements in the array
 %note: in loops you must specify the range not just the ending point
 for a = animals
@@ -21,8 +21,8 @@ for a = animals
     
     for d = days
         %calls on a function to extract dentate spikes, with inputs in ()
-      %ag_extractdspikes(animaldir, prefix, d, .015, 5)
-        ej_extractdspikes(animaldir, prefix, d, .015, 5)
+      ag_extractdspikes(animaldir, prefix, d, .015, 5)
+        %ej_extractdspikes(animaldir, prefix, d, .015, 3)
         plotdspikes %plots everything
         %plotfiltereddata_dspikes %plots based on whether animal is sleeping. other filters
         pause

@@ -1,3 +1,4 @@
+
 %% Construct filter
 %Note: this script only works with a single gc channel labeled in the chinfo
 E3 = {'r1_01_', 'r1_12_', 'r1_18_', 'r1_21_', 'r1_29_', 'r1_33_', 'r1_34_',  'r1_39_',...

@@ -20,7 +20,10 @@ load(sprintf('%s/%sdspikes%02d.mat', animaldir, prefix, s)) %loads ripples struc
 numrips = 10;  %how many ripples to print
 starts = dspikes{s}{e}{ctarget(1)}.startind(dspikes{s}{e}{ctarget(1)}.startind<900000);
 totalripnum = length(starts);
-rips = randi(totalripnum,1,numrips); %gives 1xnumrips random integers indicating selected ripple events
+%rips = randi(totalripnum,1,numrips);
+
+rips = randsample(totalripnum,numrips); %gives 1xnumrips random integers indicating selected ripple events
+rips = rips.';
 
 for r = rips
     figure %generate one
