@@ -75,7 +75,7 @@ pyr1chan = unique(pyr1chan(:,3));
         
         % smooth the envelope:
         samprate = eeg{d}{e}{t}.samprate;
-        kernel = gaussian(smoothing_width*samprate, ceil(8*smoothing_width*samprate));
+       kernel = gaussian(smoothing_width*samprate, ceil(8*smoothing_width*samprate));
         renv = smoothvect(renv, kernel);
         % calculate the threshold in uV units        
         baseline = mean(abs(double(eeg{d}{e}{t}.data))); %mean(renv);

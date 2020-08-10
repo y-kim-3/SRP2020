@@ -18,7 +18,8 @@ y_shift=1500; %spacing btwn traces for plot y-direction
 
 load(sprintf('%s/%sdspikes%02d.mat', animaldir, prefix, s)) %loads ripples structure for session 's' (from extract_ripples.m contains information from all events classified as ripples, all chan)
 numrips = 10;  %how many ripples to print
-starts = dspikes{s}{e}{ctarget(1)}.startind(dspikes{s}{e}{ctarget(1)}.startind<900000);
+%starts = dspikes{s}{e}{ctarget(1)}.startind(dspikes{s}{e}{ctarget(1)}.startind<900000);
+starts = dspikes{s}{e}{ctarget(1)}.startind;
 totalripnum = length(starts);
 %rips = randi(totalripnum,1,numrips);
 

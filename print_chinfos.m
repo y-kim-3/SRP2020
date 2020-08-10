@@ -13,9 +13,9 @@ E3 = {'r1_01_', 'r1_12_', 'r1_18_', 'r1_21_', 'r1_29_', 'r1_33_', 'r1_34_',  'r1
 E4 = {'r1_05_', 'r1_24_', 'r1_31_', 'r1_35_', ...
     'r2_08_', 'r2_13_', 'r2_14_', 'r2_26_', 'r2_27_', 'r2_36_', 'r2_38_',...
     'r3_04_', 'r3_09_', 'r3_20_', 'r3_32_', 'r3_40_'};
-animals = [E3];
+animals = [E4];
 
-animalbasedir = 'D:\Cohort 1\E3KI';
+animalbasedir = 'D:\Cohort 1\E4KI';
 for a = 1:length(animals)
     prefix = animals{a};
     load(sprintf('%s/%s/%schinfo.mat',animalbasedir,prefix,prefix))

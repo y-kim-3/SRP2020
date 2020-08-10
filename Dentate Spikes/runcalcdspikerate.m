@@ -8,11 +8,11 @@ E4 = {'r1_05_', 'r1_24_', 'r1_31_', 'r1_35_', ...
     'r2_08_', 'r2_13_', 'r2_14_', 'r2_26_', 'r2_27_', 'r2_36_', 'r2_38_',...
     'r3_04_', 'r3_09_', 'r3_20_', 'r3_32_', 'r3_40_'};
 %animals = [E3 E4];
-animals = {'r1_01_'};
+animals = {'r3_11_'};
 %run it on one animal!
 
 epochfilter = [];
-epochfilter{1} = {'task','(~isequal($descript, ''FAIL'') && ~isequal($env,''FAIL''))'};
+epochfilter{1} = {'task','(~isequal($descript, ''FAIL'') && ~isequal($env,''FAIL'')  && isequal($sess, 3))'};
 
 datafilter = [];  %only works with single channel specified
 %mua = multiunit activity; from dataset Emily picked up spiking, looking at
