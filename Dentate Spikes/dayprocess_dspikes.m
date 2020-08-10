@@ -6,11 +6,11 @@ E4 = {'r1_05_', 'r1_24_', 'r1_31_', 'r1_35_', ...
     'r2_08_', 'r2_13_', 'r2_14_', 'r2_26_', 'r2_27_', 'r2_36_', 'r2_38_',...
     'r3_04_', 'r3_09_', 'r3_20_', 'r3_32_', 'r3_40_'};
 %animals = [E3 E4];
-animals = {'r1_34_'};
+animals = {'r2_13_'};
 
 %guide to access rat files - point this at E3 and E4 separately
-animalbasedir = 'D:/Cohort 1/E3KI/';
-days = 2;
+animalbasedir = 'D:/Cohort 1/E4KI/';
+days = 3;
 %a=array iterates through all the elements in the array
 %note: inloops you must specify the range not just the ending point
 for a = animals

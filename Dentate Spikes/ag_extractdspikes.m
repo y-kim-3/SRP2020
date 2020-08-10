@@ -108,7 +108,7 @@ for i = 1:length(tmpflist) %iterate through all eps, all chans
         %restriction, do we need to eliminate events near ripples at all?
         load(sprintf('%s/%sripples%02d.mat',directoryname, fileprefix,day'))
         %ripinds = [ripples{d}{e}{pyr1chan}.startind - 100, ripples{d}{e}{pyr1chan}.endind + 100];
-        ripinds = [ripples{d}{e}{pyr1chan}.startind - 0, ripples{d}{e}{pyr1chan}.endind + 0];
+        ripinds = [ripples{d}{e}{pyr1chan}.startind - 100, ripples{d}{e}{pyr1chan}.endind + 100];
         valids = ~isExcluded(tmpevents(:,8),ripinds); %midind anywhere in window of rips
         % Assign the fields
         % start and end indeces
