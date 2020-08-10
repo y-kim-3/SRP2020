@@ -21,7 +21,7 @@ for a = animals
     
     for d = days
         %calls on a function to extract dentate spikes, with inputs in ()
-      ag_extractdspikes(animaldir, prefix, d, .015, 5)
+      ag_extractdspikes(animaldir, prefix, d, .01, 5)
        %ej_extractdspikes(animaldir, prefix, d, .015, 3)
         plotdspikes %plots everything
         %plotfiltereddata_dspikes %plots based on whether animal is sleeping. other filters
